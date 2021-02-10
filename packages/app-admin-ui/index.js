@@ -12,6 +12,7 @@ const getWebpackConfig = require('./server/getWebpackConfig');
 class AdminUIApp {
   constructor({
     name = 'Keystone',
+    customTitle = 'KeystoneJS',
     adminPath = '/admin',
     apiPath = '/admin/api',
     graphiqlPath = '/admin/graphiql',
@@ -40,6 +41,7 @@ class AdminUIApp {
     }
 
     this.name = name;
+    this.customTitle = customTitle;
     this.adminPath = adminPath;
     this.authStrategy = authStrategy;
     this.pages = pages;
@@ -76,6 +78,7 @@ class AdminUIApp {
         adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
         outputPath: path.join(builtAdminRoot, 'secure'),
+        customTitle: this.customTitle,
       })
     );
     compilers.push(secureCompiler);
@@ -88,6 +91,7 @@ class AdminUIApp {
           adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
           outputPath: path.join(builtAdminRoot, 'public'),
+          customTitle: this.customTitle,
         })
       );
       compilers.push(publicCompiler);
