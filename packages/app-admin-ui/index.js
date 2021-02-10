@@ -11,21 +11,21 @@ const getWebpackConfig = require('./server/getWebpackConfig');
 
 class AdminUIApp {
   constructor({
-    name = 'Keystone',
-    customTitle = 'KeystoneJS',
-    adminPath = '/admin',
-    apiPath = '/admin/api',
-    graphiqlPath = '/admin/graphiql',
-    authStrategy,
-    pages,
-    enableDefaultRoute = false,
-    isAccessAllowed = () => true,
-    hooks = path.resolve('./admin-ui/'),
-    schemaName = 'public',
-    adminMeta = {},
-    defaultPageSize = 50,
-    maximumPageSize = 1000,
-  } = {}) {
+                name = 'Keystone',
+                customTitle = 'KeystoneJS',
+                adminPath = '/admin',
+                apiPath = '/admin/api',
+                graphiqlPath = '/admin/graphiql',
+                authStrategy,
+                pages,
+                enableDefaultRoute = false,
+                isAccessAllowed = () => true,
+                hooks = path.resolve('./admin-ui/'),
+                schemaName = 'public',
+                adminMeta = {},
+                defaultPageSize = 50,
+                maximumPageSize = 1000,
+              } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
     }
@@ -115,7 +115,7 @@ class AdminUIApp {
 
   getAdminUIMeta(keystone) {
     // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
-    const { name, adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { name, adminPath, apiPath, graphiqlPath, pages, hooks, customTitle } = this;
     const { signinPath, signoutPath } = this.routes;
     const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
     const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
@@ -123,15 +123,15 @@ class AdminUIApp {
     // Normalize list adminConfig data, falling back to admin-level size defaults if necessary.
     Object.values(lists || {}).forEach(
       ({
-        key,
-        adminConfig: {
-          defaultPageSize = this.defaultPageSize,
-          defaultColumns,
-          defaultSort,
-          maximumPageSize = this.maximumPageSize,
-          ...rest
-        },
-      }) => {
+         key,
+         adminConfig: {
+           defaultPageSize = this.defaultPageSize,
+           defaultColumns,
+           defaultSort,
+           maximumPageSize = this.maximumPageSize,
+           ...rest
+         },
+       }) => {
         lists[key].adminConfig = {
           defaultPageSize,
           defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
@@ -153,6 +153,7 @@ class AdminUIApp {
       authStrategy,
       lists,
       name,
+      customTitle,
       ...this._adminMeta,
     };
   }
@@ -285,6 +286,7 @@ class AdminUIApp {
         adminMeta,
         adminViews: this.getAdminViews({ keystone, includeLists: true }),
         entry: 'index',
+        customTitle: this.customTitle
       })
     );
 
@@ -299,6 +301,7 @@ class AdminUIApp {
           adminMeta: { ...adminMeta, lists: {} },
           adminViews: this.getAdminViews({ keystone, includeLists: false }),
           entry: 'public',
+          customTitle: this.customTitle
         })
       );
       middlewares[0].public = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
