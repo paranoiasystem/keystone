@@ -249,6 +249,13 @@ export default class FileField extends Component {
       </Button>
     );
   };
+  renderDownloadButton = () => {
+    return (
+      <Button onClick={() => alert('test')} variant="subtle" appearance={'primary'} >
+        Download Test
+      </Button>
+    );
+  };
 
   render() {
     const { autoFocus, field, statusMessage, errors, isDisabled } = this.props;
@@ -271,6 +278,7 @@ export default class FileField extends Component {
                 <FlexGroup style={{ marginBottom: gridSize }}>
                   {this.renderUploadButton()}
                   {this.renderCancelButton()}
+                  {this.renderDownloadButton()}
                 </FlexGroup>
                 {errorMessage ? (
                   <ErrorInfo>{errorMessage}</ErrorInfo>
